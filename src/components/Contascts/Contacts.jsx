@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {TransitionGroup, CSSTransition} from 'react-transition-group';
 import './Contacts.css';
+import {deleteContact} from '../../redux/actions/editContactAction';
+import {connect} from 'react-redux';
 
 class Contacts extends Component {
 
@@ -32,4 +34,8 @@ class Contacts extends Component {
 
 };
 
-export default Contacts;
+const mapDispatchToProps = {
+    deleteContact,
+};
+
+export default connect(null, mapDispatchToProps)(Contacts);

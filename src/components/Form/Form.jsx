@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import shortId from 'short-id';
 import './Form.css';
+import {connect} from 'react-redux';
+import {getContact} from '../../redux/actions/editContactAction';
 
 class Form extends Component {
 
@@ -20,13 +22,11 @@ class Form extends Component {
     handlerSubmit = (e) => {
 
         e.preventDefault();
-        const {addContact} = this.props;
+        const {getContact, checkContact, contacts} = this.props;
         const contact = this.newContact();
-        addContact(contact);
-        this.setState(prevState => {
-            
+        if(checkContact(contacts, contact) === false) {getContact(contact)};
+        this.setState(prevState => { 
             return {name: '', number: ''}
-
         });
 
     };
@@ -55,4 +55,12 @@ class Form extends Component {
 
 };
 
-export default Form;
+const mapDispatchToProps = {
+    getContact,
+};
+
+const mapStateToProps = state => ({
+    contacts: state.contacts,
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Form);

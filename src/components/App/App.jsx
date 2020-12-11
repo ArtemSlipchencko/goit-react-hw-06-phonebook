@@ -5,72 +5,39 @@ import Contacts from '../Contascts/Contacts';
 import Filter from '../Filter/Filter';
 import Alert from '../Alert/Alert';
 import {CSSTransition} from 'react-transition-group';
+import {connect} from 'react-redux';
 
 class App extends Component {
 
     state = {
         showLogo: false,
-        contacts: [],
         filter: '',
         contactExist: false
     };
 
     componentDidMount() {
-
-        const localContacts = localStorage.getItem('contacts');
-        if(localContacts.length > 0) {
-            this.setState({contacts: JSON.parse(localContacts)});
-        }
-
         this.setState(state => ({showLogo: !state.showLogo}));
-
     };
 
     componentDidUpdate(prevProps, prevState) {
-
-        if(prevState !== this.state.contacts) {
-            localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-        }
-
+        localStorage.setItem('contacts', JSON.stringify(this.props.contacts));
     };
 
     findContact = () => {
-
-        const {contacts, filter} = this.state;
-            return contacts.filter(contact => contact.name.toLowerCase().includes(filter.toLowerCase()),
+        const {contacts, filterWord} = this.props;
+            return contacts.filter(contact => contact.name.toLowerCase().includes(filterWord.toLowerCase()),
         );
-
     };
 
-    handleFilter = (e) => {
-
-        this.setState(prevState => {
-            return {filter: e.target.value}
-        });
-
-      };
-
-    addContact = (contact) => {
-
-        const {contacts} = this.state;
+    checkContact = (contacts, contact) => {
 
         if (contacts.find((el) => el.name === contact.name)) {
             this.setState({contactExist: true}) 
-            return;
+            return true;
         };
-        this.setState( state => {
-            const contacts = [...state.contacts, contact];
-            return { contacts };
-        });
+
+        return false;
         
-    };
-
-    deleteContact = (id) => {
-
-        this.setState(prevState => {
-            return {contacts: prevState.contacts.filter(contact => contact.id !== id)};
-        });
-
     };
 
     alertOk = () => {
@@ -88,10 +55,10 @@ class App extends Component {
                     <h1>Phonebook</h1>
                 </CSSTransition>
                 <h2>Contacts form</h2>
-                <Form addContact={this.addContact} />
+                <Form checkContact={this.checkContact} />
                 <h2>Contacts list</h2>
                 <Filter filter={filter} handleFilter={this.handleFilter} />
-                <Contacts contacts={searchedContacts} deleteContact={this.deleteContact} />
+                <Contacts contacts={searchedContacts} />
                 <CSSTransition in={contactExist} unmountOnExit classNames="alert" timeout={250}>
                     <Alert ok={this.alertOk} />
                 </CSSTransition>
@@ -102,4 +69,9 @@ class App extends Component {
 
 };
 
-export default App;
+const mapStateToProps = state => ({
+    contacts: state.contacts,
+    filterWord: state.filter,
+});
+
+export default connect(mapStateToProps, null)(App);
