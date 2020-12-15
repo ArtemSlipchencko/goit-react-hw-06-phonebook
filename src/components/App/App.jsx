@@ -11,7 +11,6 @@ class App extends Component {
 
     state = {
         showLogo: false,
-        filter: '',
         contactExist: false
     };
 
@@ -46,7 +45,8 @@ class App extends Component {
 
     render() {
 
-        const {filter, showLogo, contactExist} = this.state;
+        const {showLogo, contactExist} = this.state;
+        const {filterWord} = this.props;
         const searchedContacts = this.findContact();
 
         return (
@@ -57,7 +57,7 @@ class App extends Component {
                 <h2>Contacts form</h2>
                 <Form checkContact={this.checkContact} />
                 <h2>Contacts list</h2>
-                <Filter filter={filter} handleFilter={this.handleFilter} />
+                <Filter filter={filterWord} handleFilter={this.handleFilter} />
                 <Contacts contacts={searchedContacts} />
                 <CSSTransition in={contactExist} unmountOnExit classNames="alert" timeout={250}>
                     <Alert ok={this.alertOk} />

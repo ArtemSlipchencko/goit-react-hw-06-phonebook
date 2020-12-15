@@ -6,10 +6,6 @@ import {filterContact} from '../../redux/actions/filterAction';
 
 class Filter extends Component { 
 
-  static propTypes = {
-    filter: PropTypes.string,
-  };
-
   state = {
     value: "",
   };
